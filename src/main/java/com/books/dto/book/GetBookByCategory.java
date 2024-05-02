@@ -10,10 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GetBookDto {
-
-    @NotNull(message = "Book ID year must be provided")
-    private Integer bookId;
+public class GetBookByCategory {
 
     @NotBlank(message = "Book name cannot be blank")
     private String bookName;
@@ -48,4 +45,10 @@ public class GetBookDto {
 
     @NotNull(message = "Category ID must be provided")
     private Integer categoryId;
+
+    @NotNull(message = "Category ID must be provided")
+    private String  categoryName;
+
+    @NotNull(message = "Category ID must be provided")
+    private String description;
 }

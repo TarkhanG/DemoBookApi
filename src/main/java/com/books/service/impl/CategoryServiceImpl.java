@@ -1,74 +1,101 @@
 package com.books.service.impl;
 
+import com.books.dto.book.GetBookDto;
 import com.books.dto.category.CreateCategoryDto;
+import com.books.dto.category.GetCategoryByBooks;
 import com.books.dto.category.GetCategoryDto;
 import com.books.dto.category.UpdateCategoryDto;
 import com.books.entity.Category;
 import com.books.exception.ResourceNotFoundException;
-import com.books.mapper.CategoryMapper;
 import com.books.repository.category.CategoryRepository;
-import com.books.repository.category.CategorySortingRepository;
 import com.books.service.CategoryService;
 import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Service
 @AllArgsConstructor
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
-    private final CategorySortingRepository categorySortingRepository;
-
+    private final ModelMapper modelMapper;
 
     @Override
-    public Category createCategory(CreateCategoryDto categoryDto) {
-        Category category = CategoryMapper.mapCreateCategoryDtoToCategory(categoryDto);
-        return categoryRepository.save(category);
+    public CreateCategoryDto addCategory(CreateCategoryDto categoryDto) {
+        Category cat = modelMapper.map(categoryDto, Category.class);
+        Category addedCat = categoryRepository.save(cat);
+        return modelMapper.map(addedCat, CreateCategoryDto.class);
     }
 
     @Override
-    public UpdateCategoryDto updateCategory(UpdateCategoryDto categoryDto) {
-        Optional<Category> category = categoryRepository.findById(categoryDto.getCategoryId());
-        if (category.isPresent()) {
-            Category result = CategoryMapper.mapUpdateCategoryDtoToCategory(categoryDto);
-            categoryRepository.save(result);
-            return CategoryMapper.mapCategoryToUpdateCategoryDto(result);
-        }
-         throw new ResourceNotFoundException("Category", "ID", String.valueOf(categoryDto.getCategoryId()));
-    }
-
-    @Override
-    public Optional<Category> deleteCategory(Integer id) {
-        Optional<Category> result = categoryRepository.findById(id);
-        if (result.isPresent()) {
-            categoryRepository.delete(result.get());
-            return result;
-        } else {
-            throw new ResourceNotFoundException("Category", "ID", String.valueOf(id));
-        }
-    }
-
-
-    @Override
-    public List<Category> getAllCategories(int page, int pageSize) {
+    public Page<GetCategoryDto> getAllCategories(int page, int pageSize) {
         Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Category> categoryPage = categorySortingRepository.findAll(pageable);
-        return categoryPage.toList();
+        Page<Category> categories = categoryRepository.findAll(pageable);
+        return categories.map(cat -> modelMapper.map(cat, GetCategoryDto.class));
     }
 
     @Override
-    public Optional<GetCategoryDto> getCategoryById(Integer id) {
-        if (id != null &&  categoryRepository.findById(id).isPresent()){
-            Optional<GetCategoryDto> result = categoryRepository.findById(id)
-                    .map(category -> CategoryMapper.mapCategorytoGetCategoryDto(category));
-            return result;
-        }
-        throw new ResourceNotFoundException("Category", "ID" ,String.valueOf(id));
+    public UpdateCategoryDto updateCategory(UpdateCategoryDto categoryDto, Integer categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category","Category id ", categoryId));
+        category.setCategoryName(categoryDto.getCategoryName());
+        category.setDescription(categoryDto.getDescription());
+        Category updatedCategory = categoryRepository.save(category);
+        return modelMapper.map(updatedCategory, UpdateCategoryDto.class);
     }
+
+    @Override
+    public void deleteCategory(Integer categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "category id", categoryId));
+
+        categoryRepository.delete(category);
+    }
+
+    @Override
+    public GetCategoryDto getCategory(Integer categoryId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category", "category id", categoryId));
+        return modelMapper.map(category, GetCategoryDto.class);
+    }
+
+    @Override
+    public GetCategoryDto getCategoryByName(String name) {
+        Category category = categoryRepository.findCategoryByCategoryName(name);
+        return modelMapper.map(category, GetCategoryDto.class);
+    }
+
+    public List<GetCategoryDto> getCategoriesStartingWith(String prefix) {
+        List<Category> categories = categoryRepository.findAll();
+        List<GetCategoryDto> result = categories.stream()
+                .filter(cat -> cat.getCategoryName().toLowerCase().startsWith(prefix.toLowerCase()))
+                .map(cat -> modelMapper.map(cat, GetCategoryDto.class))
+                .collect(Collectors.toList());
+
+        return result;
+    }
+
+    @Override
+    public GetCategoryByBooks getBooksByCategoryName(String categoryName) {
+        Category category = categoryRepository.findCategoryByCategoryName(categoryName);
+        if (category == null) {
+            throw new ResourceNotFoundException("Category", "Category name", categoryName);
+        }
+
+        GetCategoryByBooks result = modelMapper.map(category, GetCategoryByBooks.class);
+        List<GetBookDto> bookDtos = category.getBooks().stream()
+                .map(book -> modelMapper.map(book, GetBookDto.class))
+                .collect(Collectors.toList());
+        result.setBooks(bookDtos);
+
+        return result;
+    }
+
 }

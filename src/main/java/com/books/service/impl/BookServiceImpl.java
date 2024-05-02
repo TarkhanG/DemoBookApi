@@ -1,13 +1,13 @@
 package com.books.service.impl;
 
 import com.books.dto.book.CreateBookDto;
+import com.books.dto.book.GetBookByCategory;
 import com.books.dto.book.GetBookDto;
 import com.books.dto.book.UpdateBookDto;
 import com.books.entity.Book;
+import com.books.entity.Category;
 import com.books.exception.ResourceNotFoundException;
-import com.books.mapper.BookMapper;
 import com.books.repository.book.BookRepository;
-import com.books.repository.book.BookSortingRepository;
 import com.books.service.BookService;
 import lombok.AllArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -17,51 +17,13 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 public class BookServiceImpl implements BookService {
 
     private BookRepository bookRepository;
-    private BookSortingRepository bookSortingRepository;
     private ModelMapper modelMapper;
-
-    @Override
-    public Optional<GetBookDto> getBookById(Integer id) {
-        return bookRepository.findById(id)
-                .map(book -> modelMapper.map(book, GetBookDto.class))
-                .orElseThrow(() -> new ResourceNotFoundException("Book", "ID", String.valueOf(id)));
-    }
-
-    @Override
-    public UpdateBookDto updateBook(UpdateBookDto dto) {
-        Optional<Book> book = bookRepository.findById(dto.getBookId());
-        if (book.isPresent()) {
-            Book result = BookMapper.mapUpdateBookDtoToBook(dto);
-            bookRepository.save(result);
-            return BookMapper.mapBookToUpdateBookDto(result);
-        }
-        throw new ResourceNotFoundException("Category", "ID", String.valueOf(dto.getCategoryId()));
-    }
-
-    @Override
-    public Book deleteBook(Integer id) {
-        Optional<Book> book = bookRepository.findById(id);
-        if (book.isPresent()) {
-            bookRepository.delete(book.get());
-        }
-        throw new ResourceNotFoundException("Category", "ID", String.valueOf(id));
-    }
-
-
-    @Override
-    public Book createBook(CreateBookDto dto) {
-        Book result = BookMapper.mapCreateBookDtoToBook(dto);
-        result.setIsbn(generateISBN());
-        return bookRepository.save(result);
-    }
 
     //TODO ISBN Generator
     private String generateISBN() {
@@ -75,14 +37,79 @@ public class BookServiceImpl implements BookService {
         }
         int remainder = sum % 10;
         int checkDigit = (10 - remainder) % 10;
-        return isbn12 + checkDigit; // ISBN-13 numarası
+        return isbn12 + checkDigit; // ISBN-13
     }
 
 
     @Override
-    public List<Book> getAllBooks(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page, pageSize);
-        Page<Book> categoryPage = bookSortingRepository.findAll(pageable);
-        return categoryPage.toList();
+    public CreateBookDto addBook(CreateBookDto createBookDto) {
+        Book book = modelMapper.map(createBookDto, Book.class);
+        book.setIsbn(generateISBN());
+        Book addedBook = bookRepository.save(book);
+        return modelMapper.map(addedBook, CreateBookDto.class);
     }
+
+    @Override
+    public Page<GetBookDto> getAllBooks(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
+        Page<Book> books = bookRepository.findAll(pageable);
+        Page<GetBookDto> result = books.map(book -> modelMapper.map(book, GetBookDto.class));
+        return result;
+    }
+
+    @Override
+    public UpdateBookDto updateBook(UpdateBookDto updateBookDto, Integer id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book","Book id ", id));
+
+        book.setBookName(updateBookDto.getBookName());
+        book.setAuthor(updateBookDto.getAuthor());
+        book.setTitle(updateBookDto.getTitle());
+        book.setPublisher(updateBookDto.getPublisher());
+        book.setLanguage(updateBookDto.getLanguage());
+        book.setCover(updateBookDto.getCover());
+        book.setImage(updateBookDto.getImage());
+        book.setPublishedYear(updateBookDto.getPublishedYear());
+        book.setQuantity(updateBookDto.getQuantity());
+
+        Category category = new Category();
+        category.setCategoryId(updateBookDto.getCategoryId());
+        book.setCategory(category);
+
+        Book updatedBook = bookRepository.save(book);
+        return modelMapper.map(updatedBook, UpdateBookDto.class);
+    }
+
+
+    @Override
+    public void deleteBook(Integer id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book", "Book id", id));
+        bookRepository.delete(book);
+    }
+
+    @Override
+    public GetBookDto getBook(Integer id) {
+        Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book", "Book id ", id));
+        return modelMapper.map(book, GetBookDto.class);
+    }
+
+    @Override
+    public GetBookDto findBookByBookName(String bookName) {
+        Book book = bookRepository.findBookByBookName(bookName);
+        GetBookDto result = modelMapper.map(book, GetBookDto.class);
+        return result;
+    }
+
+    @Override
+    public GetBookByCategory getBookByCategory(Integer id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book", "Book id ", id));
+
+        GetBookByCategory result = modelMapper.map(book, GetBookByCategory.class);
+        result.setCategoryName(book.getCategory().getCategoryName());
+        result.setDescription(book.getCategory().getDescription());
+
+        return result;
+    }
+
 }
