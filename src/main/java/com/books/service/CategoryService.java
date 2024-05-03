@@ -1,17 +1,21 @@
 package com.books.service;
 
 import com.books.dto.category.CreateCategoryDto;
+import com.books.dto.category.GetCategoryByBooks;
 import com.books.dto.category.GetCategoryDto;
 import com.books.dto.category.UpdateCategoryDto;
-import com.books.entity.Category;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
-import java.util.Optional;
+
 
 public interface CategoryService{
- Category createCategory(CreateCategoryDto categoryDto);
- UpdateCategoryDto updateCategory(UpdateCategoryDto categoryDto);
- Optional<Category> deleteCategory(Integer id);
- List<Category> getAllCategories(int page, int pageSize);
- Optional<GetCategoryDto> getCategoryById(Integer id);
+ CreateCategoryDto addCategory(CreateCategoryDto categoryDto);
+ Page<GetCategoryDto> getAllCategories (int page, int pageSize);
+ UpdateCategoryDto updateCategory (UpdateCategoryDto categoryDto, Integer categoryId);
+ void deleteCategory (Integer categoryId);
+ GetCategoryDto getCategory (Integer categoryId);
+ GetCategoryDto getCategoryByName (String name);
+ List<GetCategoryDto> getCategoriesStartingWith(String prefix);
+ GetCategoryByBooks getBooksByCategoryName(String categoryName);
 }

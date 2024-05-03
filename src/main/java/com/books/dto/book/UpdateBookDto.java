@@ -10,8 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UpdateBookDto {
-    @NotNull(message = "Book ID year must be provided")
-    private Integer bookId;
 
     @NotBlank(message = "Book name cannot be blank")
     private String bookName;

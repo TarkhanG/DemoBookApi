@@ -1,17 +1,23 @@
 package com.books.service;
 
 import com.books.dto.book.CreateBookDto;
+import com.books.dto.book.GetBookByCategory;
 import com.books.dto.book.GetBookDto;
 import com.books.dto.book.UpdateBookDto;
 import com.books.entity.Book;
+import org.springframework.data.domain.Page;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Optional;
 
 public interface BookService {
-    Book createBook(CreateBookDto dto);
-    List<Book> getAllBooks(int page, int pageSize);
-    Optional<GetBookDto> getBookById(Integer id);
-    UpdateBookDto updateBook(UpdateBookDto dto);
-    Book deleteBook(Integer id);
+//    Optional<GetBookDto> getBookById(Integer id);
+
+
+    CreateBookDto addBook(CreateBookDto createBookDto);
+    Page<GetBookDto> getAllBooks(int page, int pageSize);
+    UpdateBookDto updateBook(UpdateBookDto updateBookDto, Integer id);
+    void deleteBook(Integer id);
+    GetBookDto getBook(Integer id);
+    GetBookDto findBookByBookName(String bookName);
+    GetBookByCategory getBookByCategory(Integer categoryId);
 }

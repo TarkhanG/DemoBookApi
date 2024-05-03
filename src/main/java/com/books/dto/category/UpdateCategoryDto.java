@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UpdateCategoryDto {
 
-    @NotNull(message = "This field cannot be empty")
-    private Integer categoryId;
     @NotBlank(message = "Category name can not be a null or empty")
     private String categoryName;
     @NotBlank(message = "Category description can not be a null or empty")
