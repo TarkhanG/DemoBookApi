@@ -21,7 +21,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 						url = "https://www.demobook.com")),
 		externalDocs = @ExternalDocumentation(
 				description = "DemoBook REST API Documentation",
-				url = "http://localhost:8080/swagger-ui/index.html"))
+				url = "http://localhost:9090/swagger-ui/index.html"))
 public class DemoBookApplication {
 
 	public static void main(String[] args) {

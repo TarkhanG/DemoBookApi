@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -37,9 +39,6 @@ public class GetBookDto {
     @NotBlank(message = "Cover description cannot be blank")
     private String cover;
 
-    @NotNull(message = "Image ID cannot be null")
-    private Integer imageId;
-
     @NotNull(message = "Published year must be provided")
     private int publishedYear;
 
@@ -48,4 +47,7 @@ public class GetBookDto {
 
     @NotNull(message = "Category ID must be provided")
     private Integer categoryId;
+
+    @NotNull(message = "Image ID cannot be null")
+    private Integer photoFileId;
 }

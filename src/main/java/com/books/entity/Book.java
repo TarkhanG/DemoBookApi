@@ -1,5 +1,6 @@
 package com.books.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -7,6 +8,10 @@ import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -39,9 +44,6 @@ public class Book {
     @NotBlank(message = "Cover description cannot be blank")
     private String cover;
 
-    @NotBlank(message = "Image URL cannot be blank")
-    private String image;
-
     @NotNull(message = "Published year must be provided")
     private int publishedYear;
 
@@ -52,4 +54,9 @@ public class Book {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
+
+    @JsonManagedReference
+    @ManyToOne
+    @JoinColumn(name = "photoFile_id")
+    private PhotoFile photoFile;
 }

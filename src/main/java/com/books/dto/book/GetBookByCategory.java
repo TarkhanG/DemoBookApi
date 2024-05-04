@@ -34,21 +34,21 @@ public class GetBookByCategory {
     @NotBlank(message = "Cover description cannot be blank")
     private String cover;
 
-    @NotBlank(message = "Image URL cannot be blank")
-    private String image;
-
     @NotNull(message = "Published year must be provided")
     private int publishedYear;
 
     @NotNull(message = "Quantity must be provided")
     private int quantity;
 
+    @NotBlank(message = "Category name must be blank")
+    private String categoryName;
+
+    @NotBlank(message = "Category description must be blank")
+    private String description;
+
     @NotNull(message = "Category ID must be provided")
     private Integer categoryId;
 
-    @NotNull(message = "Category ID must be provided")
-    private String  categoryName;
-
-    @NotNull(message = "Category ID must be provided")
-    private String description;
+    @NotNull(message = "Image ID cannot be null")
+    private Integer photoFileId;
 }
