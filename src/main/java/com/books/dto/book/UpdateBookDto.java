@@ -29,9 +29,6 @@ public class UpdateBookDto {
     @NotBlank(message = "Cover description cannot be blank")
     private String cover;
 
-    @NotNull(message = "Image ID cannot be null")
-    private Integer imageId;
-
     @NotNull(message = "Published year must be provided")
     private int publishedYear;
 
@@ -41,4 +38,6 @@ public class UpdateBookDto {
     @NotNull(message = "Category ID must be provided")
     private Integer categoryId;
 
+    @NotNull(message = "Image ID cannot be null")
+    private Integer photoFileId;
 }

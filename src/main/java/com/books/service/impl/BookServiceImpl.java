@@ -6,7 +6,9 @@ import com.books.dto.book.GetBookDto;
 import com.books.dto.book.UpdateBookDto;
 import com.books.entity.Book;
 import com.books.entity.Category;
+import com.books.entity.PhotoFile;
 import com.books.exception.ResourceNotFoundException;
+import com.books.mapper.Mapper;
 import com.books.repository.book.BookRepository;
 import com.books.service.BookService;
 import lombok.AllArgsConstructor;
@@ -43,10 +45,10 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public CreateBookDto addBook(CreateBookDto createBookDto) {
-        Book book = modelMapper.map(createBookDto, Book.class);
+        Book book = Mapper.dtoToBook(createBookDto);
         book.setIsbn(generateISBN());
         Book addedBook = bookRepository.save(book);
-        return modelMapper.map(addedBook, CreateBookDto.class);
+        return Mapper.toCreateBookDto(addedBook);
     }
 
     @Override
@@ -68,13 +70,16 @@ public class BookServiceImpl implements BookService {
         book.setPublisher(updateBookDto.getPublisher());
         book.setLanguage(updateBookDto.getLanguage());
         book.setCover(updateBookDto.getCover());
-        book.setImage(updateBookDto.getImage());
         book.setPublishedYear(updateBookDto.getPublishedYear());
         book.setQuantity(updateBookDto.getQuantity());
 
         Category category = new Category();
         category.setCategoryId(updateBookDto.getCategoryId());
         book.setCategory(category);
+
+        PhotoFile photoFile = new PhotoFile();
+        photoFile.setPhotoFileId(updateBookDto.getPhotoFileId());
+        book.setPhotoFile(photoFile);
 
         Book updatedBook = bookRepository.save(book);
         return modelMapper.map(updatedBook, UpdateBookDto.class);
@@ -95,9 +100,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public GetBookDto findBookByBookName(String bookName) {
-        Book book = bookRepository.findBookByBookName(bookName);
-        GetBookDto result = modelMapper.map(book, GetBookDto.class);
-        return result;
+       try{
+           Book book = bookRepository.findBookByBookName(bookName);
+           GetBookDto result = modelMapper.map(book, GetBookDto.class);
+           return result;
+       }catch (ResourceNotFoundException e){
+           throw new ResourceNotFoundException("Book", "Book name", bookName);
+       }
     }
 
     @Override
