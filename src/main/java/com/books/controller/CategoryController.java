@@ -63,8 +63,8 @@ public class CategoryController {
         return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(Constants.STATUS_201, Constants.MESSAGE_201));
     }
 
-    @PutMapping("/update/{categor-id}")
-    public ResponseEntity<ResponseDto> updateCategory(@Valid @RequestBody UpdateCategoryDto categoryDto, @Valid @PathVariable("categor-id") Integer id)
+    @PutMapping("/update/{category-id}")
+    public ResponseEntity<ResponseDto> updateCategory(@Valid @RequestBody UpdateCategoryDto categoryDto, @Valid @PathVariable("category-id") Integer id)
     {
         categoryService.updateCategory(categoryDto,id);
         return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(Constants.STATUS_200, Constants.MESSAGE_200));

@@ -42,7 +42,7 @@ public class StorageServiceImpl implements StorageService {
 
 
     @Override
-    public String uploadFile(MultipartFile file) {
+    public Integer uploadFile(MultipartFile file) {
         String contentType = file.getContentType();
         if (!"image/jpeg".equals(contentType) && !"image/png".equals(contentType)) {
             throw new FileUploadException("Only JPG and PNG files can be uploaded.");
@@ -53,7 +53,6 @@ public class StorageServiceImpl implements StorageService {
         s3Client.putObject(new PutObjectRequest(bucketName, fileName, fileObj));
         fileObj.delete();
 
-        // Dosyanın s3'de saklandığı bilgileri alarak File entity'sini oluştur
         PhotoFile newFile = PhotoFile.builder()
                 .name(file.getOriginalFilename())
                 .path(fileName)
@@ -63,7 +62,7 @@ public class StorageServiceImpl implements StorageService {
                 .build();
 
         PhotoFile savedFile = fileRepository.save(newFile);
-        return "File uploaded : " + fileName;
+        return savedFile.getPhotoFileId();
     }
 
     @Override

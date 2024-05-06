@@ -6,7 +6,7 @@ public class Constants {
 
     }
 
-    public static final String SAVINGS = "File uploaded successfully";
+    public static final String FILE_UPLOAD_MSG = "File uploaded successfully";
     public static final String STATUS_201 = "201";
     public static final String MESSAGE_201 = "created successfully";
     public static final String STATUS_200 = "200";

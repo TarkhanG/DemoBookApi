@@ -3,6 +3,7 @@ package com.books.exception;
 import com.books.dto.ErrorResponseDto;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -20,13 +21,16 @@ import java.util.Map;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+    @Override
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {
         Map<String, String> validationErrors = new HashMap<>();
-        for (ObjectError error : ex.getBindingResult().getAllErrors()) {
+        List<ObjectError> validationErrorList = ex.getBindingResult().getAllErrors();
+
+        validationErrorList.forEach((error) -> {
             String fieldName = ((FieldError)error).getField();
             String validationMsg = error.getDefaultMessage();
             validationErrors.put(fieldName, validationMsg);
-        }
+        });
         return new ResponseEntity<>(validationErrors, HttpStatus.BAD_REQUEST);
     }
 
