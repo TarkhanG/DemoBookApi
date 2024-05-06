@@ -1,10 +1,6 @@
 package com.books.service.impl;
 
-import com.books.dto.book.GetBookDto;
-import com.books.dto.category.CreateCategoryDto;
-import com.books.dto.category.GetCategoryByBooks;
-import com.books.dto.category.GetCategoryDto;
-import com.books.dto.category.UpdateCategoryDto;
+import com.books.dto.category.*;
 import com.books.entity.Category;
 import com.books.exception.ResourceNotFoundException;
 import com.books.repository.category.CategoryRepository;
@@ -69,8 +65,13 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public GetCategoryDto getCategoryByName(String name) {
         Category category = categoryRepository.findCategoryByCategoryName(name);
-        return modelMapper.map(category, GetCategoryDto.class);
+        if (category == null) {
+            throw new ResourceNotFoundException("Category", "name ", name);
+        } else {
+            return modelMapper.map(category, GetCategoryDto.class);
+        }
     }
+
 
     public List<GetCategoryDto> getCategoriesStartingWith(String prefix) {
         List<Category> categories = categoryRepository.findAll();
@@ -90,8 +91,8 @@ public class CategoryServiceImpl implements CategoryService {
         }
 
         GetCategoryByBooks result = modelMapper.map(category, GetCategoryByBooks.class);
-        List<GetBookDto> bookDtos = category.getBooks().stream()
-                .map(book -> modelMapper.map(book, GetBookDto.class))
+        List<GetBookByCategoryDto> bookDtos = category.getBooks().stream()
+                .map(book -> modelMapper.map(book, GetBookByCategoryDto.class))
                 .collect(Collectors.toList());
         result.setBooks(bookDtos);
 

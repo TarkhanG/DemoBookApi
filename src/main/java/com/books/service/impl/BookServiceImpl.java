@@ -7,6 +7,8 @@ import com.books.dto.book.UpdateBookDto;
 import com.books.entity.Book;
 import com.books.entity.Category;
 import com.books.entity.PhotoFile;
+import com.books.exception.FileUploadException;
+import com.books.exception.GlobalExceptionHandler;
 import com.books.exception.ResourceNotFoundException;
 import com.books.mapper.Mapper;
 import com.books.repository.book.BookRepository;
@@ -19,13 +21,17 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.IOException;
+
 
 @Service
 @AllArgsConstructor
 public class BookServiceImpl implements BookService {
 
-    private BookRepository bookRepository;
-    private ModelMapper modelMapper;
+    private final BookRepository bookRepository;
+    private final ModelMapper modelMapper;
+    private final Mapper mapper;
 
     //TODO ISBN Generator
     private String generateISBN() {
@@ -42,13 +48,12 @@ public class BookServiceImpl implements BookService {
         return isbn12 + checkDigit; // ISBN-13
     }
 
-
     @Override
     public CreateBookDto addBook(CreateBookDto createBookDto) {
-        Book book = Mapper.dtoToBook(createBookDto);
-        book.setIsbn(generateISBN());
-        Book addedBook = bookRepository.save(book);
-        return Mapper.toCreateBookDto(addedBook);
+            Book book = mapper.dtoToBook(createBookDto);
+            book.setIsbn(generateISBN());
+            Book addedBook = bookRepository.save(book);
+            return Mapper.toCreateBookDto(addedBook);
     }
 
     @Override
@@ -100,13 +105,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public GetBookDto findBookByBookName(String bookName) {
-       try{
            Book book = bookRepository.findBookByBookName(bookName);
+           if (book == null) {
+               throw new ResourceNotFoundException("Book", "Book name ", bookName);
+           }
            GetBookDto result = modelMapper.map(book, GetBookDto.class);
            return result;
-       }catch (ResourceNotFoundException e){
-           throw new ResourceNotFoundException("Book", "Book name", bookName);
-       }
     }
 
     @Override

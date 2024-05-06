@@ -14,5 +14,5 @@ public class GetCategoryByBooks {
     private Integer categoryId;
     private String categoryName;
     private String description;
-    private List<GetBookDto> books;
+    private List<GetBookByCategoryDto> books;
 }

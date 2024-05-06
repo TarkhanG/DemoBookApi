@@ -4,10 +4,20 @@ import com.books.dto.book.CreateBookDto;
 import com.books.entity.Book;
 import com.books.entity.Category;
 import com.books.entity.PhotoFile;
+import com.books.exception.ResourceNotFoundException;
+import com.books.repository.category.CategoryRepository;
+import com.books.repository.storage.FileRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 
+@Component
+@RequiredArgsConstructor
 public class Mapper {
 
-    public static Book dtoToBook(CreateBookDto dto) {
+    private final FileRepository fileRepository;
+    private final CategoryRepository categoryRepository;
+
+    public Book dtoToBook(CreateBookDto dto) {
         Book book = new Book();
         book.setBookName(dto.getBookName());
         book.setAuthor(dto.getAuthor());
@@ -18,14 +28,15 @@ public class Mapper {
         book.setQuantity(dto.getQuantity());
         book.setCover(dto.getCover());
 
-        Category category = new Category();
-        category.setCategoryId(dto.getCategoryId());
+        Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow
+                (() -> new ResourceNotFoundException("Category", "Category ID", dto.getCategoryId()));
+
         book.setCategory(category);
 
-        PhotoFile photoFile = new PhotoFile();
-        photoFile.setPhotoFileId(dto.getPhotoFileId());
-        book.setPhotoFile(photoFile);
+        PhotoFile photoFile = fileRepository.findById(dto.getPhotoFileId()).orElseThrow
+                (() -> new ResourceNotFoundException("Photo File", "Photo File ID", dto.getPhotoFileId()));
 
+        book.setPhotoFile(photoFile);
         return book;
     }
 
