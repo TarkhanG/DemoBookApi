@@ -14,6 +14,7 @@ import com.books.mapper.Mapper;
 import com.books.repository.book.BookRepository;
 import com.books.service.BookService;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -26,7 +27,7 @@ import java.io.IOException;
 
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
