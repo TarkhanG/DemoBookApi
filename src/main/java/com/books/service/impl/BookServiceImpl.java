@@ -7,13 +7,10 @@ import com.books.dto.book.UpdateBookDto;
 import com.books.entity.Book;
 import com.books.entity.Category;
 import com.books.entity.PhotoFile;
-import com.books.exception.FileUploadException;
-import com.books.exception.GlobalExceptionHandler;
 import com.books.exception.ResourceNotFoundException;
-import com.books.mapper.Mapper;
+import com.books.mapper.BookMapper;
 import com.books.repository.book.BookRepository;
 import com.books.service.BookService;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
@@ -22,9 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
-
 
 @Service
 @RequiredArgsConstructor
@@ -32,7 +26,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepository;
     private final ModelMapper modelMapper;
-    private final Mapper mapper;
+    private final BookMapper mapper;
 
     //TODO ISBN Generator
     private String generateISBN() {
@@ -54,7 +48,7 @@ public class BookServiceImpl implements BookService {
             Book book = mapper.dtoToBook(createBookDto);
             book.setIsbn(generateISBN());
             Book addedBook = bookRepository.save(book);
-            return Mapper.toCreateBookDto(addedBook);
+            return BookMapper.toCreateBookDto(addedBook);
     }
 
     @Override

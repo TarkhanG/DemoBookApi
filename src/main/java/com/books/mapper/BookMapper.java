@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class Mapper {
+public class BookMapper {
 
     private final FileRepository fileRepository;
     private final CategoryRepository categoryRepository;

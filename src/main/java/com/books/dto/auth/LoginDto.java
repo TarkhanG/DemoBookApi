@@ -9,12 +9,10 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class LoginDto {
-
-    @Email(message = "Invalid email format")
-    @NotBlank(message = "Email must not be blank")
-    private String email;
-
-    @NotBlank(message = "Password must not be blank")
-    private String password;
+public class LoginDto{
+        @Email(message = "Invalid email format")
+        @NotBlank(message = "Email must not be blank")
+        private String email;
+        @NotBlank(message = "Password must not be blank")
+        private String password;
 }
