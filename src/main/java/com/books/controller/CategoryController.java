@@ -27,53 +27,76 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/get/{category-id}")
-    public ResponseEntity<GetCategoryDto> getCategory(@PathVariable("category-id") Integer id)
-    {
+    public ResponseEntity<GetCategoryDto> getCategory(@PathVariable("category-id") Integer id) {
         GetCategoryDto category = categoryService.getCategory(id);
         return ResponseEntity.status(HttpStatus.OK).body(category);
     }
 
     @GetMapping("/getByName/{category-name}")
-    public ResponseEntity<GetCategoryDto> getCategoryByName(@Valid @PathVariable("category-name") String categoryName){
+    public ResponseEntity<GetCategoryDto> getCategoryByName(
+            @Valid @PathVariable("category-name") String categoryName
+    ) {
         GetCategoryDto result = categoryService.getCategoryByName(categoryName);
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
     @GetMapping("/searchByCategoryName/{category-name}")
-    public ResponseEntity<List<GetCategoryDto>> getAllCategoriesByName(@Valid @RequestParam("category-name") String categoryName) {
+    public ResponseEntity<List<GetCategoryDto>> getAllCategoriesByName(
+            @Valid @RequestParam("category-name") String categoryName
+    ) {
         List<GetCategoryDto> categories = categoryService.getCategoriesStartingWith(categoryName);
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 
     @GetMapping("getCategoryByBooks/{category-name}")
-    public ResponseEntity<GetCategoryByBooks> getCategoryByBooks(@PathVariable("category-name") String categoryName) {
+    public ResponseEntity<GetCategoryByBooks> getCategoryByBooks(
+            @PathVariable("category-name") String categoryName
+    ) {
         GetCategoryByBooks categoryByBooks = categoryService.getBooksByCategoryName(categoryName);
         return ResponseEntity.status(HttpStatus.OK).body(categoryByBooks);
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<Page<GetCategoryDto>> getAll(@RequestParam int page, @RequestParam int size) {
+    public ResponseEntity<Page<GetCategoryDto>> getAll(
+            @RequestParam int page, @RequestParam int size
+    ) {
         Page<GetCategoryDto> categories = categoryService.getAllCategories(page, size);
         return ResponseEntity.status(HttpStatus.OK).body(categories);
     }
 
     @PostMapping("create")
-    public ResponseEntity<ResponseDto> create(@Valid @RequestBody CreateCategoryDto categoryDto) {
+    public ResponseEntity<ResponseDto> create(
+            @Valid @RequestBody CreateCategoryDto categoryDto
+    ) {
         categoryService.addCategory(categoryDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResponseDto(Constants.STATUS_201, Constants.MESSAGE_201));
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                new ResponseDto(Constants.STATUS_201,
+                        Constants.MESSAGE_201)
+        );
     }
 
     @PutMapping("/update/{category-id}")
-    public ResponseEntity<ResponseDto> updateCategory(@Valid @RequestBody UpdateCategoryDto categoryDto, @Valid @PathVariable("category-id") Integer id)
-    {
-        categoryService.updateCategory(categoryDto,id);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(Constants.STATUS_200, Constants.MESSAGE_200));
+    public ResponseEntity<ResponseDto> updateCategory
+            (@Valid @RequestBody UpdateCategoryDto categoryDto,
+             @Valid @PathVariable("category-id") Integer id
+            ) {
+        categoryService.updateCategory(categoryDto, id);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseDto(
+                        Constants.STATUS_200,
+                        Constants.MESSAGE_200)
+        );
 
     }
 
-        @DeleteMapping("/delete/{category-id}")
-        public ResponseEntity<ResponseDto> delete(@Valid @PathVariable("category-id") Integer categoryId) {
+    @DeleteMapping("/delete/{category-id}")
+    public ResponseEntity<ResponseDto> delete(
+            @Valid @PathVariable("category-id") Integer categoryId
+    ) {
         categoryService.deleteCategory(categoryId);
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseDto(Constants.STATUS_200, Constants.MESSAGE_200));
+        return ResponseEntity.status(HttpStatus.OK).body(
+                new ResponseDto(Constants.STATUS_200,
+                        Constants.MESSAGE_200)
+        );
     }
 }

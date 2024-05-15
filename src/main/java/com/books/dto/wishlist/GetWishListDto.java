@@ -1,26 +1,27 @@
-package com.books.entity;
+package com.books.dto.wishlist;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
+import com.books.entity.Book;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
-@Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Book {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class GetWishListDto {
+
+    @NotNull(message = "Wish List ID must be provided")
+    private Integer wishlistId;
+
+    @NotNull(message = "Book ID must be provided")
     private Integer bookId;
+
+    @NotNull(message = "User ID must be provided")
+    private Integer userId;
 
     @NotBlank(message = "Book name cannot be blank")
     private String bookName;
@@ -30,10 +31,6 @@ public class Book {
 
     @NotBlank(message = "Title cannot be blank")
     private String title;
-
-    @Column(unique = true)
-    @NotBlank(message = "ISBN cannot be blank")
-    private String isbn;
 
     @NotBlank(message = "Publisher cannot be blank")
     private String publisher;
@@ -49,17 +46,4 @@ public class Book {
 
     @NotNull(message = "Quantity must be provided")
     private int quantity;
-
-    @JsonManagedReference
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
-    @JsonManagedReference
-    @ManyToOne
-    @JoinColumn(name = "photoFile_id")
-    private PhotoFile photoFile;
-
-    @OneToMany(mappedBy = "book")
-    private List<WishList> wishLists;
 }

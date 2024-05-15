@@ -36,7 +36,9 @@ public class BookServiceImpl implements BookService {
         // ISBN-13 ucun son xana hesaplanır
         int sum = 0;
         for (int i = 0; i < 12; i++) {
-            sum += (i % 2 == 0) ? Character.getNumericValue(isbn12.charAt(i)) : Character.getNumericValue(isbn12.charAt(i)) * 3;
+            sum += (i % 2 == 0)
+                    ? Character.getNumericValue(isbn12.charAt(i))
+                    : Character.getNumericValue(isbn12.charAt(i)) * 3;
         }
         int remainder = sum % 10;
         int checkDigit = (10 - remainder) % 10;
@@ -88,13 +90,15 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public void deleteBook(Integer id) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book", "Book id", id));
+        Book book = bookRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Book", "Book id", id));
         bookRepository.delete(book);
     }
 
     @Override
     public GetBookDto getBook(Integer id) {
-        Book book = bookRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Book", "Book id ", id));
+        Book book = bookRepository.findById(id).orElseThrow(() ->
+                new ResourceNotFoundException("Book", "Book id ", id));
         return modelMapper.map(book, GetBookDto.class);
     }
 

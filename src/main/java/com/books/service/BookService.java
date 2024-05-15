@@ -4,9 +4,7 @@ import com.books.dto.book.CreateBookDto;
 import com.books.dto.book.GetBookByCategory;
 import com.books.dto.book.GetBookDto;
 import com.books.dto.book.UpdateBookDto;
-import com.books.entity.Book;
 import org.springframework.data.domain.Page;
-import org.springframework.web.multipart.MultipartFile;
 
 
 public interface BookService {

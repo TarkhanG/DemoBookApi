@@ -39,6 +39,8 @@ public class SecurityConfig {
                                 .requestMatchers("/category/**").hasAuthority("ADMIN")
                                 .requestMatchers("/books/**").hasAuthority("ADMIN")
                                 .requestMatchers("/auth/adminRole").hasAuthority("ADMIN")
+                                .requestMatchers("/file/**").hasAuthority("ADMIN")
+                                .requestMatchers("/wishlist/**").hasAnyAuthority("USER", "ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 ).userDetailsService(userDetailsServiceImpl)
