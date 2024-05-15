@@ -17,29 +17,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(BookAPIException.class)
     public ResponseEntity<ErrorResponseDto> handleBookAPIException(BookAPIException exception,
-                                                                   WebRequest webRequest) {
-        ErrorResponseDto errorDetails = new ErrorResponseDto(
-                webRequest.getDescription(false),
-                exception.getStatus(),
-                exception.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest request) {
-        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
-                request.getDescription(false),
-                HttpStatus.NOT_FOUND,
-                exception.getMessage(),
-                LocalDateTime.now()
-        );
-        return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler(FileUploadException.class)
-    public ResponseEntity<ErrorResponseDto> handleFileUploadException(FileUploadException exception, WebRequest request) {
+                                                                   WebRequest request) {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(
                 request.getDescription(false),
                 HttpStatus.BAD_REQUEST,
@@ -47,6 +25,20 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponseDto, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> handleResourceNotFoundException(
+            ResourceNotFoundException exception,
+            WebRequest request
+    ) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(
+                request.getDescription(false),
+                HttpStatus.NOT_FOUND,
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(AccessDeniedException.class)

@@ -30,7 +30,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody AppUser user){
-        return ResponseEntity.ok(authService.authenticate(user));
+        return ResponseEntity.ok(authService.login(user));
     }
 
     @PostMapping("/adminRole")

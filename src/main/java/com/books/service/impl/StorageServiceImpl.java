@@ -7,7 +7,7 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
 import com.books.entity.PhotoFile;
 import com.books.entity.enums.FileMediaType;
-import com.books.exception.FileUploadException;
+import com.books.exception.BookAPIException;
 import com.books.repository.storage.FileRepository;
 import com.books.service.StorageService;
 import org.slf4j.Logger;
@@ -45,7 +45,7 @@ public class StorageServiceImpl implements StorageService {
     public Integer uploadFile(MultipartFile file) {
         String contentType = file.getContentType();
         if (!"image/jpeg".equals(contentType) && !"image/png".equals(contentType)) {
-            throw new FileUploadException("Only JPG and PNG files can be uploaded.");
+            throw new BookAPIException("Only JPG and PNG files can be uploaded.");
         }
         File fileObj = convertMultiPartFileToFile(file);
         String fileName = System.currentTimeMillis() + "_" + file.getOriginalFilename();

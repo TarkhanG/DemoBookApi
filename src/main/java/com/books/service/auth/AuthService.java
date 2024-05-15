@@ -1,7 +1,6 @@
 package com.books.service.auth;
 
 import com.books.constants.Constants;
-import com.books.dto.ResponseDto;
 import com.books.dto.auth.RegisterDto;
 import com.books.dto.auth.response.AuthenticationResponse;
 import com.books.entity.AppUser;
@@ -10,11 +9,11 @@ import com.books.exception.ResourceNotFoundException;
 import com.books.mapper.UserMapper;
 import com.books.repository.user.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +41,7 @@ public class AuthService {
         return response;
     }
 
-    public AuthenticationResponse authenticate(AppUser request){
+    public AuthenticationResponse login(AppUser request){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getUsername(),

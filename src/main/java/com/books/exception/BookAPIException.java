@@ -1,29 +1,12 @@
 package com.books.exception;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
+@ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BookAPIException extends RuntimeException {
 
-    private HttpStatus status;
-    private String message;
-
-    public BookAPIException(HttpStatus status, String message) {
-        this.status = status;
-        this.message = message;
-    }
-
-    public BookAPIException(String message, HttpStatus status, String message1) {
-        super(message);
-        this.status = status;
-        this.message = message1;
-    }
-
-    public HttpStatus getStatus() {
-        return status;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
+    public BookAPIException(String resourceName) {
+        super(String.format("%s not found with the given input data %s:'%s'", resourceName));
     }
 }
