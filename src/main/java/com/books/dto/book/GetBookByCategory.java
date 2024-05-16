@@ -40,6 +40,9 @@ public class GetBookByCategory {
     @NotNull(message = "Quantity must be provided")
     private int quantity;
 
+    @NotNull(message = "Price must be provided")
+    private float price;
+
     @NotBlank(message = "Category name must be blank")
     private String categoryName;
 

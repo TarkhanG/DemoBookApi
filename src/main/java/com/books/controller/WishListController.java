@@ -3,7 +3,7 @@ package com.books.controller;
 import com.books.constants.Constants;
 import com.books.dto.ResponseDto;
 import com.books.dto.wishlist.AddWishListDto;
-import com.books.entity.WishList;
+import com.books.dto.wishlist.GetWishListDto;
 import com.books.service.WishListService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/wishlist")
 @RequiredArgsConstructor
@@ -22,16 +23,17 @@ public class WishListController {
 
     private final WishListService wishListService;
 
-    @PostMapping("/addWishlist")
-    public ResponseEntity<ResponseDto> addWishlist(
-            @Valid @RequestBody AddWishListDto addWishListDto
-            ) {
-        wishListService.addWishList(addWishListDto);
+    @PostMapping("/add")
+    public ResponseEntity<ResponseDto> addToWishList(
+            @Valid
+            @RequestBody AddWishListDto addWishListDto
+    ) {
+        wishListService.addToWishList(addWishListDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ResponseDto(
-                        Constants.STATUS_201,
-                        Constants.MESSAGE_WISHLIST_ADDED
-                ));
+                        Constants.STATUS_200,
+                        Constants.MESSAGE_WISHLIST_ADDED)
+        );
     }
 
     @DeleteMapping("/deleteWishList/{wishlist-id}")
@@ -46,11 +48,12 @@ public class WishListController {
         );
     }
 
-//    @GetMapping("/user/{userId}")
-//    public ResponseEntity<List<WishList>> getUserWishList(
-//            @PathVariable("userId") Integer userId
-//    ) {
-//        List<WishList> userWishList = wishListService.getUserWishList(userId);
-//        return ResponseEntity.ok(userWishList);
-//    }
+    @GetMapping("/getByUserId/{userId}")
+    public ResponseEntity<List<GetWishListDto>> getUserWishList(
+            @Valid
+            @PathVariable Integer userId
+    ) {
+        List<GetWishListDto> wishlistDtos = wishListService.getUserWishList(userId);
+        return ResponseEntity.ok(wishlistDtos);
+    }
 }

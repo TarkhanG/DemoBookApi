@@ -14,14 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GetWishListDto {
 
-    @NotNull(message = "Wish List ID must be provided")
-    private Integer wishlistId;
-
     @NotNull(message = "Book ID must be provided")
     private Integer bookId;
-
-    @NotNull(message = "User ID must be provided")
-    private Integer userId;
 
     @NotBlank(message = "Book name cannot be blank")
     private String bookName;
@@ -46,4 +40,7 @@ public class GetWishListDto {
 
     @NotNull(message = "Quantity must be provided")
     private int quantity;
+
+    @NotNull(message = "Price must be provided")
+    private float price;
 }
