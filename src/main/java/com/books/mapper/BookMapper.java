@@ -27,6 +27,7 @@ public class BookMapper {
         book.setPublishedYear(dto.getPublishedYear());
         book.setQuantity(dto.getQuantity());
         book.setCover(dto.getCover());
+        book.setPrice(dto.getPrice());
 
         Category category = categoryRepository.findById(dto.getCategoryId()).orElseThrow
                 (() -> new ResourceNotFoundException("Category", "Category ID", dto.getCategoryId()));
@@ -50,6 +51,7 @@ public class BookMapper {
         dto.setPublishedYear(book.getPublishedYear());
         dto.setQuantity(book.getQuantity());
         dto.setCover(book.getCover());
+        dto.setPrice(book.getPrice());
 
         if (book.getCategory() != null) {
             dto.setCategoryId(book.getCategory().getCategoryId());

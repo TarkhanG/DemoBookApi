@@ -50,6 +50,9 @@ public class Book {
     @NotNull(message = "Quantity must be provided")
     private int quantity;
 
+    @NotNull(message = "Price must be provided")
+    private float price;
+
     @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "category_id")

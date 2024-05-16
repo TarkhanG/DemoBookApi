@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(HttpStatus.BAD_REQUEST)
 public class BookAPIException extends RuntimeException {
 
-    public BookAPIException(String resourceName) {
-        super(String.format("%s not found with the given input data %s:'%s'", resourceName));
+    public BookAPIException(String message) {
+        super(String.format(message));
     }
 }

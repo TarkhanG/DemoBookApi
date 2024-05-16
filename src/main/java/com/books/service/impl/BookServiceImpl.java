@@ -74,6 +74,7 @@ public class BookServiceImpl implements BookService {
         book.setCover(updateBookDto.getCover());
         book.setPublishedYear(updateBookDto.getPublishedYear());
         book.setQuantity(updateBookDto.getQuantity());
+        book.setPrice(updateBookDto.getPrice());
 
         Category category = new Category();
         category.setCategoryId(updateBookDto.getCategoryId());
