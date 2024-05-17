@@ -58,7 +58,7 @@ public class AuthService {
 
     public void grantAdminRole(Integer userId) {
         AppUser user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User", "User ID", userId));
 
         user.setRole(Role.ADMIN);
         userRepository.save(user);

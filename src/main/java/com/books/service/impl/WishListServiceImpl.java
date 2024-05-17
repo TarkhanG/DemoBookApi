@@ -1,6 +1,6 @@
 package com.books.service.impl;
 
-import com.books.dto.wishlist.AddWishListDto;
+import com.books.dto.auth.JWTDto;
 import com.books.dto.wishlist.GetWishListDto;
 import com.books.entity.AppUser;
 import com.books.entity.Book;
@@ -13,7 +13,9 @@ import com.books.repository.wishlist.WishListRepository;
 import com.books.service.WishListService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+
 import org.springframework.stereotype.Service;
+import com.books.util.JWTUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,31 +29,40 @@ public class WishListServiceImpl implements WishListService {
     private final BookRepository bookRepository;
     private final UserRepository userRepository;
     private final ModelMapper modelMapper;
+    private final JWTUtil jwtUtil;
 
 
     @Override
-    public AddWishListDto addToWishList(AddWishListDto addWishListDto) {
-        AppUser user = userRepository.findById(addWishListDto.getUserId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User" ,"User ID" ,addWishListDto.getUserId())
-                );
+    public WishList addToWishList(String token, Integer bookId) {
 
-        Book book = bookRepository.findById(addWishListDto.getBookId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Book" ,"Book ID" ,addWishListDto.getBookId())
-                );
+        try{
+            JWTDto jwtDto = jwtUtil.decodeToken(token);
+            Integer userId = jwtDto.getUserId();
 
-        WishList existingWishList = wishListRepository.findByUserAndBook(user, book);
-        if (existingWishList != null) {
-            throw new BookAPIException("Book already added: " + addWishListDto.getBookId());
+            AppUser user = userRepository.findById(userId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("User" ,"User ID" , userId)
+                    );
+
+            Book book = bookRepository.findById(bookId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("Book" ,"Book ID" , bookId)
+                    );
+
+            WishList existingWishList = wishListRepository.findByUserAndBook(user, book);
+            if (existingWishList != null) {
+                throw new BookAPIException("Book already added: " + bookId);
+            }
+
+            WishList newWishList = new WishList();
+            newWishList.setUser(user);
+            newWishList.setBook(book);
+
+            return wishListRepository.save(newWishList);
+        }catch (Exception e) {
+            throw new BookAPIException("Error retrieving wishlist: " + e.getMessage());
         }
 
-        WishList newWishList = new WishList();
-        newWishList.setUser(user);
-        newWishList.setBook(book);
-
-        wishListRepository.save(newWishList);
-        return modelMapper.map(newWishList , AddWishListDto.class);
     }
 
 
@@ -63,22 +74,35 @@ public class WishListServiceImpl implements WishListService {
     }
 
     @Override
-    public List<GetWishListDto> getUserWishList(Integer userId) {
-        AppUser user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("User", "User ID", userId));
+    public List<GetWishListDto> getUserWishList(String token) {
+        try {
+            JWTDto jwtDto = jwtUtil.decodeToken(token);
+            Integer userId = jwtDto.getUserId();
 
-        List<WishList> wishLists = wishListRepository.findByUser(user);
+            AppUser user = userRepository.findById(userId)
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException("User", "User ID", userId));
 
-        List<GetWishListDto> wishlistDtos = new ArrayList<>();
-        for (WishList wishList : wishLists) {
-            Book book = wishList.getBook();
-            GetWishListDto dto = modelMapper.map(book, GetWishListDto.class);
-            dto.setBookId(wishList.getBook().getBookId());
-            wishlistDtos.add(dto);
+            List<WishList> wishLists = wishListRepository.findByUser(user);
+
+            if (wishLists.isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            List<GetWishListDto> wishlistDtos = new ArrayList<>();
+            for (WishList wishList : wishLists) {
+                Book book = wishList.getBook();
+
+                GetWishListDto dto = modelMapper.map(book, GetWishListDto.class);
+                dto.setBookId(book.getBookId());
+
+                wishlistDtos.add(dto);
+            }
+            return wishlistDtos;
+
+        } catch (Exception e) {
+            throw new BookAPIException("Error retrieving wishlist: " + e.getMessage());
         }
-
-        return wishlistDtos;
     }
 
 }
