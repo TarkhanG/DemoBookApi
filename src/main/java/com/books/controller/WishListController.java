@@ -2,9 +2,9 @@ package com.books.controller;
 
 import com.books.constants.Constants;
 import com.books.dto.ResponseDto;
-import com.books.dto.wishlist.AddWishListDto;
 import com.books.dto.wishlist.GetWishListDto;
 import com.books.service.WishListService;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,12 +23,14 @@ public class WishListController {
 
     private final WishListService wishListService;
 
-    @PostMapping("/add")
+    @PostMapping("/add/{bookId}")
     public ResponseEntity<ResponseDto> addToWishList(
+            @RequestHeader("Authorization")
+            String token,
             @Valid
-            @RequestBody AddWishListDto addWishListDto
+            @PathVariable Integer bookId
     ) {
-        wishListService.addToWishList(addWishListDto);
+        wishListService.addToWishList(token, bookId);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 new ResponseDto(
                         Constants.STATUS_200,
@@ -48,12 +50,11 @@ public class WishListController {
         );
     }
 
-    @GetMapping("/getByUserId/{userId}")
+    @GetMapping("/getByUserId")
     public ResponseEntity<List<GetWishListDto>> getUserWishList(
-            @Valid
-            @PathVariable Integer userId
+            @RequestHeader("Authorization") String authHeader
     ) {
-        List<GetWishListDto> wishlistDtos = wishListService.getUserWishList(userId);
+        List<GetWishListDto> wishlistDtos = wishListService.getUserWishList(authHeader);
         return ResponseEntity.ok(wishlistDtos);
     }
 }
