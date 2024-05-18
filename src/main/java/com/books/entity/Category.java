@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class Category {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer categoryId;
 
     @NotBlank(message = "Category name cannot be blank")

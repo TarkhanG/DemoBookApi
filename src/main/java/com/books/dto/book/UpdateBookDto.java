@@ -36,7 +36,7 @@ public class UpdateBookDto {
     private int quantity;
 
     @NotNull(message = "Price must be provided")
-    private float price;
+    private Double price;
 
     @NotNull(message = "Category ID must be provided")
     private Integer categoryId;

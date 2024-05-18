@@ -1,16 +1,20 @@
 package com.books.dto.book;
 
+import com.books.entity.Category;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateBookDto {
+public class BookDto {
+    @NotNull(message = "Book ID year must be provided")
+    private Integer bookId;
+
     @NotBlank(message = "Book name cannot be blank")
     private String bookName;
 
@@ -19,6 +23,10 @@ public class CreateBookDto {
 
     @NotBlank(message = "Title cannot be blank")
     private String title;
+
+    @Column(unique = true)
+    @NotBlank(message = "ISBN cannot be blank")
+    private String isbn;
 
     @NotBlank(message = "Publisher cannot be blank")
     private String publisher;
@@ -38,9 +46,8 @@ public class CreateBookDto {
     @NotNull(message = "Price must be provided")
     private Double price;
 
-    @NotNull(message = "Category ID must be provided")
-    private Integer categoryId;
+    private Category category;
 
-    @NotNull(message = "Image ID must be provided")
+    @NotNull(message = "Image ID cannot be null")
     private Integer photoFileId;
 }

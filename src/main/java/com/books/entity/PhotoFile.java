@@ -15,7 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class PhotoFile {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer photoFileId;
 
     private String name;

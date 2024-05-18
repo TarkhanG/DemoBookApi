@@ -41,6 +41,7 @@ public class SecurityConfig {
                                 .requestMatchers("/auth/adminRole").hasAuthority("ADMIN")
                                 .requestMatchers("/file/**").hasAuthority("ADMIN")
                                 .requestMatchers("/wishlist/**").hasAnyAuthority("USER", "ADMIN")
+                                .requestMatchers("/cart/**").hasAnyAuthority("USER", "ADMIN")
                                 .anyRequest()
                                 .authenticated()
                 ).userDetailsService(userDetailsServiceImpl)
