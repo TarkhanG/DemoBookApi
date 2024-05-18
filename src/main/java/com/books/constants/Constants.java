@@ -15,6 +15,7 @@ public class Constants {
     public static final String MESSAGE_REGISTER_SUCCESSFUL = "Registration successful";
     public static final String MESSAGE_ADMIN_ROLE_GRANTED = "Admin role granted successfully";
     public static final String MESSAGE_WISHLIST_ADDED = "Wishlist item added successfully";
+    public static final String MESSAGE_ADDED_TO_CART = "Item added to cart successfully";
 //    public static final String STATUS_417 = "417";
 //    public static final String MESSAGE_417_UPDATE = "Update operation failed, Please try again or contact Dev team";
 //    public static final String MESSAGE_417_DELETE = "Delete operation failed, Please try again or contact Dev team";

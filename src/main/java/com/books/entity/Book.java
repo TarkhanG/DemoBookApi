@@ -1,6 +1,5 @@
 package com.books.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -19,7 +18,6 @@ import java.util.Set;
 @NoArgsConstructor
 public class Book {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer bookId;
 
     @NotBlank(message = "Book name cannot be blank")
@@ -51,7 +49,7 @@ public class Book {
     private int quantity;
 
     @NotNull(message = "Price must be provided")
-    private float price;
+    private Double price;
 
     @JsonManagedReference
     @ManyToOne
